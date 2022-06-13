@@ -85,6 +85,8 @@ func main() {
 	numberOfBatches := 10
 	batchSize := 100000
 
+	start := time.Now()
+
 	for batchNumber := 0; batchNumber < numberOfBatches; batchNumber++ {
 		start := time.Now().UTC().Add(time.Duration(batchSize) * time.Minute)
 		for i := 0; i < batchSize; i++ {
@@ -111,4 +113,6 @@ func main() {
 	}
 
 	log.Printf("Finished sending %d events\n", numberOfBatches*batchSize)
+	log.Printf("Start time: %v", start.Format(time.RFC3339))
+	log.Printf("End time: %v", time.Now().Format(time.RFC3339))
 }
