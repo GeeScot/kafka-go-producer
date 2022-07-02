@@ -88,10 +88,10 @@ func main() {
 	start := time.Now()
 
 	for batchNumber := 0; batchNumber < numberOfBatches; batchNumber++ {
-		start := time.Now().UTC().Add(time.Duration(batchSize) * time.Minute)
+		measuredOn := time.Now().UTC().Add(time.Duration(batchSize) * time.Minute)
 		for i := 0; i < batchSize; i++ {
 			b, err := json.Marshal(Measurement{
-				MeasuredOn:  start.Add(time.Duration(i) * time.Minute).Format(time.RFC3339),
+				MeasuredOn:  measuredOn.Add(time.Duration(i) * time.Minute).Format(time.RFC3339),
 				Location:    1,
 				Temperature: rand.Float32() * 24,
 			})
@@ -101,9 +101,9 @@ func main() {
 
 			err = p.Produce(&kafka.Message{
 				TopicPartition: topicPartition,
-				Value:          b},
-				nil,
-			)
+				Value:          b,
+			}, nil)
+
 			if err != nil {
 				fmt.Printf("Failed to produce measurement: %s\n", err)
 			}
