@@ -9,12 +9,16 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/google/uuid"
 )
 
 type Measurement struct {
-	MeasuredOn  string  `json:"measured_on"`
-	Location    int     `json:"location"`
-	Temperature float32 `json:"temperature"`
+	TenantId   string  `json:"tenantId"`
+	MeasuredOn string  `json:"measuredOn"`
+	DeviceId   int     `json:"deviceId"`
+	SpaceId    int     `json:"spaceId"`
+	MetricType string  `json:"metricType"`
+	Value      float32 `json:"value"`
 }
 
 func main() {
@@ -91,9 +95,12 @@ func main() {
 		measuredOn := time.Now().UTC().Add(time.Duration(batchSize) * time.Minute)
 		for i := 0; i < batchSize; i++ {
 			b, err := json.Marshal(Measurement{
-				MeasuredOn:  measuredOn.Add(time.Duration(i) * time.Minute).Format(time.RFC3339),
-				Location:    1,
-				Temperature: rand.Float32() * 24,
+				TenantId:   uuid.New().String(),
+				MeasuredOn: measuredOn.Add(time.Duration(i) * time.Minute).Format(time.RFC3339),
+				DeviceId:   1,
+				SpaceId:    1,
+				MetricType: "Temperature",
+				Value:      rand.Float32() * 24,
 			})
 			if err != nil {
 				fmt.Printf("Failed to create marshal measurement: %s\n", err)
